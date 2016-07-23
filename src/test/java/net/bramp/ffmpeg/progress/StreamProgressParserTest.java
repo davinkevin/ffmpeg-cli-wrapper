@@ -19,7 +19,7 @@ public class StreamProgressParserTest {
   public void testNormal() throws IOException {
     listener.reset();
 
-    StreamProgressParser parser = new StreamProgressParser(listener);
+    StreamProgressParser parser = new StreamProgressParser(listener, 0);
 
     InputStream inputStream = combineResource(Progresses.allFiles);
     parser.processStream(inputStream);

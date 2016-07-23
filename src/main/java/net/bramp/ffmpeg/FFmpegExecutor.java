@@ -1,6 +1,5 @@
 package net.bramp.ffmpeg;
 
-import com.google.common.base.Optional;
 import net.bramp.ffmpeg.builder.FFmpegBuilder;
 import net.bramp.ffmpeg.job.FFmpegJob;
 import net.bramp.ffmpeg.job.SinglePassFFmpegJob;
@@ -27,12 +26,12 @@ public class FFmpegExecutor {
 
   public FFmpegJob createJob(FFmpegBuilder builder) {
     // Single Pass
-    return new SinglePassFFmpegJob(ffmpeg, builder);
+    return new SinglePassFFmpegJob(ffmpeg, ffprobe, builder);
   }
 
   public FFmpegJob createJob(FFmpegBuilder builder, ProgressListener listener) {
     // Single Pass
-    return new SinglePassFFmpegJob(ffmpeg, builder, listener);
+    return new SinglePassFFmpegJob(ffmpeg, ffprobe, builder, listener);
   }
 
   /**
@@ -42,6 +41,6 @@ public class FFmpegExecutor {
    * @return A new two-pass FFmpegJob
    */
   public FFmpegJob createTwoPassJob(FFmpegBuilder builder) {
-    return new TwoPassFFmpegJob(ffmpeg, builder);
+    return new TwoPassFFmpegJob(ffmpeg, ffprobe, builder);
   }
 }

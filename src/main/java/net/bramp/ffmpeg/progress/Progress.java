@@ -12,6 +12,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * TODO Change to be immutable
  */
 public class Progress {
+  public double duration = -1;
   public long frame = 0;
   public Fraction fps = Fraction.ZERO;
 
@@ -19,7 +20,7 @@ public class Progress {
 
   public long bitrate = 0;
   public long total_size = 0;
-  public long out_time_ms = 0;
+  public double out_time_ms = 0;
 
   public long dup_frames = 0;
   public long drop_frames = 0;
@@ -30,7 +31,15 @@ public class Progress {
     // Nothing
   }
 
-  public Progress(long frame, float fps, long bitrate, long total_size, long out_time_ms,
+  public Progress(double duration) {
+    this.duration = duration*1_000_000; // Need to investigate why need to be multiply by 1_000_000
+  }
+  public Progress(double length, double duration) {
+    this.duration = duration;
+    this.out_time_ms = length;
+  }
+
+  public Progress(long frame, float fps, long bitrate, long total_size, double out_time_ms,
       long dup_frames, long drop_frames, float speed, String progress) {
     this.frame = frame;
     this.fps = Fraction.getFraction(fps);
@@ -80,7 +89,7 @@ public class Progress {
         total_size = Long.parseLong(value);
         return false;
       case "out_time_ms":
-        out_time_ms = Long.parseLong(value);
+        out_time_ms = Double.parseDouble(value);
         return false;
       case "out_time":
         // There is also out_time_ms, so we ignore out_time.
@@ -152,4 +161,12 @@ public class Progress {
         // @formatter:on
         .toString();
   }
+
+  public double progressionRatio() {
+    return out_time_ms / duration;
+  }
+
+  /*public double getRatioProgression() {
+    return
+  }*/
 }

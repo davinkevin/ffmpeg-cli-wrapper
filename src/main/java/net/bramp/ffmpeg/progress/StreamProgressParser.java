@@ -2,20 +2,18 @@ package net.bramp.ffmpeg.progress;
 
 import com.google.common.base.Charsets;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import java.io.*;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 public class StreamProgressParser {
 
   final ProgressListener listener;
+  final double duration;
 
-  public StreamProgressParser(ProgressListener listener) {
+  public StreamProgressParser(ProgressListener listener, double duration) {
     this.listener = checkNotNull(listener);
+    this.duration = duration;
   }
 
   private static BufferedReader wrapInBufferedReader(Reader reader) {
@@ -36,11 +34,11 @@ public class StreamProgressParser {
     final BufferedReader in = wrapInBufferedReader(reader);
 
     String line;
-    Progress p = new Progress();
+    Progress p = new Progress(duration);
     while ((line = in.readLine()) != null) {
       if (p.parseLine(line)) {
         listener.progress(p);
-        p = new Progress();
+        p = new Progress(duration);
       }
     }
   }

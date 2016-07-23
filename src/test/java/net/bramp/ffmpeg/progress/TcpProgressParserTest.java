@@ -20,7 +20,7 @@ public class TcpProgressParserTest extends AbstractProgressParserTest {
 
   @Override
   public ProgressParser newParser(ProgressListener listener) throws IOException, URISyntaxException {
-    return new TcpProgressParser(listener);
+    return new TcpProgressParser(listener, 0);
   }
 
   @Test

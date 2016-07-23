@@ -16,8 +16,8 @@ public abstract class AbstractSocketProgressParser implements ProgressParser {
 
   Thread thread; // Thread for handling incoming connections
 
-  public AbstractSocketProgressParser(ProgressListener listener) {
-    this.parser = new StreamProgressParser(listener);
+  public AbstractSocketProgressParser(ProgressListener listener, double duration) {
+    this.parser = new StreamProgressParser(listener, duration);
   }
 
   /**

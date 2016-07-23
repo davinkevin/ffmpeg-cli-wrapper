@@ -15,14 +15,15 @@ public class UdpProgressParser extends AbstractSocketProgressParser {
   final DatagramSocket socket;
   final URI address;
 
-  public UdpProgressParser(ProgressListener listener) throws SocketException, URISyntaxException {
-    this(listener, 0, InetAddress.getLoopbackAddress());
+  public UdpProgressParser(ProgressListener listener, double duration) throws SocketException,
+      URISyntaxException {
+    this(listener, duration, 0, InetAddress.getLoopbackAddress());
   }
 
-  public UdpProgressParser(ProgressListener listener, int port, InetAddress addr)
+  public UdpProgressParser(ProgressListener listener, double duration, int port, InetAddress addr)
       throws SocketException, URISyntaxException {
 
-    super(listener);
+    super(listener, duration);
 
     this.socket = new DatagramSocket(port, checkNotNull(addr));
     this.address = createUri("udp", socket.getLocalAddress(), socket.getLocalPort());

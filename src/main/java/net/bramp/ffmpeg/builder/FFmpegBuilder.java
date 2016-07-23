@@ -130,6 +130,10 @@ public class FFmpegBuilder {
     return addInput(filename);
   }
 
+  public List<String> getInputs() {
+    return this.inputs;
+  }
+
   public FFmpegBuilder setFormat(String format) {
     this.format = checkNotNull(format);
     return this;

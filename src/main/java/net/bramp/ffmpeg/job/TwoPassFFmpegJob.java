@@ -1,8 +1,8 @@
 package net.bramp.ffmpeg.job;
 
-import com.google.common.base.Optional;
 import com.google.common.base.Throwables;
 import net.bramp.ffmpeg.FFmpeg;
+import net.bramp.ffmpeg.FFprobe;
 import net.bramp.ffmpeg.builder.FFmpegBuilder;
 import net.bramp.ffmpeg.progress.ProgressListener;
 import org.slf4j.Logger;
@@ -25,12 +25,13 @@ public class TwoPassFFmpegJob extends FFmpegJob {
   final String passlogPrefix;
   final FFmpegBuilder builder;
 
-  public TwoPassFFmpegJob(FFmpeg ffmpeg, FFmpegBuilder builder) {
-    this(ffmpeg, builder, null);
+  public TwoPassFFmpegJob(FFmpeg ffmpeg, FFprobe ffprobe, FFmpegBuilder builder) {
+    this(ffmpeg, ffprobe, builder, null);
   }
 
-  public TwoPassFFmpegJob(FFmpeg ffmpeg, FFmpegBuilder builder, @Nullable ProgressListener listener) {
-    super(ffmpeg, listener);
+  public TwoPassFFmpegJob(FFmpeg ffmpeg, FFprobe ffprobe, FFmpegBuilder builder,
+      @Nullable ProgressListener listener) {
+    super(ffmpeg, ffprobe, listener);
 
     // Random prefix so multiple runs don't clash
     this.passlogPrefix = UUID.randomUUID().toString();
@@ -60,10 +61,10 @@ public class TwoPassFFmpegJob extends FFmpegJob {
         final boolean override = builder.getOverrideOutputFiles();
 
         FFmpegBuilder b1 = builder.setPass(1).overrideOutputFiles(true);
-        ffmpeg.run(b1, listener);
+        ffmpeg.run(b1, ffprobe, listener);
 
         FFmpegBuilder b2 = builder.setPass(2).overrideOutputFiles(override);
-        ffmpeg.run(b2, listener);
+        ffmpeg.run(b2, ffprobe, listener);
 
       } finally {
         deletePassLog();

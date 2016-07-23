@@ -1,18 +1,18 @@
 package net.bramp.ffmpeg;
 
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import net.bramp.ffmpeg.builder.FFmpegBuilder;
 import net.bramp.ffmpeg.info.Codec;
 import net.bramp.ffmpeg.info.Format;
+import net.bramp.ffmpeg.probe.FFmpegProbeResult;
+import net.bramp.ffmpeg.progress.Progress;
 import net.bramp.ffmpeg.progress.ProgressListener;
 import net.bramp.ffmpeg.progress.ProgressParser;
 import net.bramp.ffmpeg.progress.TcpProgressParser;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.output.NullOutputStream;
 import org.apache.commons.lang3.math.Fraction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -183,12 +183,13 @@ public class FFmpeg {
     return formats;
   }
 
-  protected ProgressParser createProgressParser(ProgressListener listener) throws IOException {
+  protected ProgressParser createProgressParser(ProgressListener listener, double duration)
+      throws IOException {
     // TODO In future create the best kind for this OS, unix socket, named pipe, or TCP.
     try {
       // Default to TCP because it is supported across all OSes, and is better than UDP because it
       // provides good properties such as in-order packets, reliability, error checking, etc.
-      return new TcpProgressParser(checkNotNull(listener));
+      return new TcpProgressParser(checkNotNull(listener), duration);
     } catch (URISyntaxException e) {
       throw new IOException(e);
     }
@@ -220,15 +221,22 @@ public class FFmpeg {
     }
   }
 
-  public void run(FFmpegBuilder builder, @Nullable ProgressListener listener) throws IOException {
+  public void run(FFmpegBuilder builder, FFprobe ffprobe, @Nullable ProgressListener listener) throws IOException {
     checkNotNull(builder);
 
     if (listener != null) {
-      try (ProgressParser progressParser = createProgressParser(listener)) {
+      double duration = 0;
+      for (FFmpegProbeResult f : ffprobe.probe(builder.getInputs())) {
+        duration += f.getFormat().duration;
+      }
+
+      try (ProgressParser progressParser = createProgressParser(listener, duration)) {
         progressParser.start();
         builder = builder.addProgress(progressParser.getUri());
 
         run(builder.build());
+
+        listener.progress(new Progress(duration, duration));
       }
     } else {
       run(builder.build());

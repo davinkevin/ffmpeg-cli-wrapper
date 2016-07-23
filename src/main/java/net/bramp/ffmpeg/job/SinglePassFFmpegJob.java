@@ -1,8 +1,8 @@
 package net.bramp.ffmpeg.job;
 
-import com.google.common.base.Optional;
 import com.google.common.base.Throwables;
 import net.bramp.ffmpeg.FFmpeg;
+import net.bramp.ffmpeg.FFprobe;
 import net.bramp.ffmpeg.builder.FFmpegBuilder;
 import net.bramp.ffmpeg.progress.ProgressListener;
 
@@ -14,13 +14,13 @@ public class SinglePassFFmpegJob extends FFmpegJob {
 
   final public FFmpegBuilder builder;
 
-  public SinglePassFFmpegJob(FFmpeg ffmpeg, FFmpegBuilder builder) {
-    this(ffmpeg, builder, null);
+  public SinglePassFFmpegJob(FFmpeg ffmpeg, FFprobe ffprobe, FFmpegBuilder builder) {
+    this(ffmpeg, ffprobe, builder, null);
   }
 
-  public SinglePassFFmpegJob(FFmpeg ffmpeg, FFmpegBuilder builder,
+  public SinglePassFFmpegJob(FFmpeg ffmpeg, FFprobe ffprobe, FFmpegBuilder builder,
       @Nullable ProgressListener listener) {
-    super(ffmpeg, listener);
+    super(ffmpeg, ffprobe, listener);
     this.builder = checkNotNull(builder);
 
     // Build the args now (but throw away the results). This allows the illegal arguments to be
@@ -34,7 +34,7 @@ public class SinglePassFFmpegJob extends FFmpegJob {
     state = State.RUNNING;
 
     try {
-      ffmpeg.run(builder, listener);
+      ffmpeg.run(builder, ffprobe, listener);
       state = State.FINISHED;
 
     } catch (Throwable t) {

@@ -16,6 +16,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -107,5 +108,15 @@ public class FFprobe {
     } finally {
       p.destroy();
     }
+  }
+
+  public List<FFmpegProbeResult> probe(List<String> inputs) throws IOException {
+    ImmutableList.Builder<FFmpegProbeResult> probeResults = new ImmutableList.Builder<>();
+
+    for (String input : inputs) {
+      probeResults.add(probe(input));
+    }
+
+    return probeResults.build();
   }
 }

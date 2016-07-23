@@ -12,13 +12,14 @@ public class TcpProgressParser extends AbstractSocketProgressParser {
   final ServerSocket server;
   final URI address;
 
-  public TcpProgressParser(ProgressListener listener) throws IOException, URISyntaxException {
-    this(listener, 0, InetAddress.getLoopbackAddress());
+  public TcpProgressParser(ProgressListener listener, double duration) throws IOException,
+      URISyntaxException {
+    this(listener, duration, 0, InetAddress.getLoopbackAddress());
   }
 
-  public TcpProgressParser(ProgressListener listener, int port, InetAddress addr)
+  public TcpProgressParser(ProgressListener listener, double duration, int port, InetAddress addr)
       throws IOException, URISyntaxException {
-    super(listener);
+    super(listener, duration);
     this.server = new ServerSocket(port, 0, addr);
     this.address = createUri("tcp", server.getInetAddress(), server.getLocalPort());
   }

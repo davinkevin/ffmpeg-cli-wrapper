@@ -68,7 +68,7 @@ public class ReadmeTest {
 
     FFmpegFormat format = probeResult.getFormat();
     String line1 =
-        String.format("File: '%s' ; Format: '%s' ; Duration: %.3fs", format.filename,
+        String.format("File: '%s' ; Format: '%s' ; Duration: %fms", format.filename,
             format.format_long_name, format.duration);
 
     FFmpegStream stream = probeResult.getStreams().get(0);
@@ -78,7 +78,7 @@ public class ReadmeTest {
 
     assertThat(
         line1,
-        is("File: 'src/test/resources/net/bramp/ffmpeg/samples/big_buck_bunny_720p_1mb.mp4' ; Format: 'QuickTime / MOV' ; Duration: 5.312s"));
+        is("File: 'src/test/resources/net/bramp/ffmpeg/samples/big_buck_bunny_720p_1mb.mp4' ; Format: 'QuickTime / MOV' ; Duration: 5,312000ms"));
     assertThat(line2,
         is("Codec: 'H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10' ; Width: 1280px ; Height: 720px"));
   }

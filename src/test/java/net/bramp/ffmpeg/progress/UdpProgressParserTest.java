@@ -19,7 +19,7 @@ public class UdpProgressParserTest extends AbstractProgressParserTest {
 
   @Override
   public ProgressParser newParser(ProgressListener listener) throws IOException, URISyntaxException {
-    return new UdpProgressParser(listener);
+    return new UdpProgressParser(listener, 0);
   }
 
   @Test
